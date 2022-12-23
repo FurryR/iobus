@@ -1,21 +1,43 @@
 #ifndef _IOBUS_H_
 #define _IOBUS_H_
+/**
+ * IOBus 基于 MIT 协议开源。
+ * Copyright(c) 凌 2022.
+ */
 #include <poll.h>
 
 #include "./awacorn/awacorn.h"
 #include "./awacorn/promise.h"
 namespace IOBus {
+/**
+ * @brief 监听器类型。
+ */
 typedef std::pair<pollfd, std::function<void(Awacorn::EventLoop*, pollfd*)>>
     Listener;
+/**
+ * @brief IOBus 监听队列。
+ */
 typedef class IOBus {
   std::vector<Listener> _event;
 
  public:
+  /**
+   * @brief 添加对 I/O 队列的监听。
+   *
+   * @param fd 对应的 pollfd。
+   * @param fn 触发时监听的函数。
+   * @return Listener* 监听 id
+   */
   Listener* wait(
       const pollfd& fd,
       const std::function<void(Awacorn::EventLoop*, pollfd*)>& fn) noexcept {
     return _event.push_back(std::make_pair(fd, fn)), (Listener*)&_event.back();
   }
+  /**
+   * @brief 删除监听器。
+   *
+   * @param id 监听 id
+   */
   void remove(const Listener* id) noexcept {
     for (size_t i = 0; i < _event.size(); i++) {
       if (&_event[i] == id) {
@@ -24,6 +46,11 @@ typedef class IOBus {
       }
     }
   }
+  /**
+   * @brief 启动监听循环
+   *
+   * @return Awacorn::AsyncFn<void> 异步函数。
+   */
   Awacorn::AsyncFn<void> start() {
     return [this](Awacorn::EventLoop* ev) -> void {
       ev->create(
@@ -47,8 +74,3 @@ typedef class IOBus {
 IOBus global;
 }  // namespace IOBus
 #endif
-
-// If you're reading this, you've been in a coma for almost 20 years.
-// We're trying a new technique.
-
-// If you can read this, please wake up. We missed you.
