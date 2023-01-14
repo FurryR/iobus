@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "./awacorn/awacorn.h"
-#include "./awacorn/promise.h"
 namespace IOBus {
 /**
  * @brief 监听器类型。
