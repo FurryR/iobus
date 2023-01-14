@@ -41,15 +41,16 @@ typedef class IOBus {
                    it2 != _event.cend(); it2++) {
                 if (&(*it2) == *it) {
                   _event.erase(it2);
-                  if (_event.empty()) {
-                    _ev->clear(_intv);
-                    _intv = nullptr;
-                    break;
-                  }
+                  break;
                 }
               }
             }
             _off_schedule.clear();
+            if (_event.empty()) {
+              _ev->clear(_intv);
+              _intv = nullptr;
+              return;
+            }
           }
           std::vector<pollfd> fd(_event.size());
           size_t i = 0;
