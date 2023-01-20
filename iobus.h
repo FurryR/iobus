@@ -4,7 +4,7 @@
  * IOBus 基于 MIT 协议开源。
  * Copyright(c) 凌 2022.
  */
-#include <poll.h>
+#include <sys/poll.h>
 
 #include <list>
 #include <set>
